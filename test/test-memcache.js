@@ -2,15 +2,16 @@
 tests for expresso
 */
 
-var sys = require('sys'),
-  Memcache = require('memcache'),
-  assert = require('assert'),
-  port = 11211;
-var host = 'localhost';
+var util      = require('util')
+  , Memcache = require('../lib/memcache')
+  //, vows     = require('vows')
+  , assert   = require('assert');
+
+var host = 'localhost'
+  , port = 11211;
 
 mc = new Memcache(port, host);
 mc.on('error', function(e){
-
   if (e.errno == 111){
     exports['startup test'] = function(){
 
@@ -20,7 +21,7 @@ mc.on('error', function(e){
   }
 
   exports['startup test'] = function(){
-    assert.ok(false, "Unexpected error during connection: "+sys.inspect(e));
+    assert.ok(false, "Unexpected error during connection: "+util.inspect(e));
   }
 });
 mc.connect();
