@@ -7,18 +7,17 @@
   "author": "Tim Eggert <tim@elbart.com>",
   "main": "./lib/memcache",
   "devDependencies": {
-  "expresso": ">=0.7.0"
+    "vows": "*"
   },
   "directories": {
-  "lib": "lib",
-  "test": "test"
+    "lib": "lib",
+    "test": "test"
   },
   "scripts": {
-  "test": "make test",
-  "test-cov": "make test-cov"
+    "test": "vows --spec test/*-test.js"
   },
   "engines": {
-  "node": "*"
+    "node": "*"
   },
   "keywords": [ "memcache", "memcached" ]
 }

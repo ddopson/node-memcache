@@ -4,45 +4,62 @@ tests for expresso
 
 var util      = require('util')
   , Memcache = require('../lib/memcache')
-  //, vows     = require('vows')
+  , vows     = require('vows')
   , assert   = require('assert');
 
 var host = 'localhost'
-  , port = 11211;
+  , port = 11211
+  , mc = new Memcache(port, host);
 
-mc = new Memcache(port, host);
-mc.on('error', function(e){
-  if (e.errno == 111){
-    exports['startup test'] = function(){
-
-      assert.ok(false, "You need to have a memcache server running on localhost:11211 for these tests to run");
+vows.describe('memcache')
+.addBatch({
+  'connect': {
+    topic: function() {
+      mc.connect();
+      mc.on('connect', this.callback);
+      mc.on('error', this.callback);
     }
-    return;
+    ,'connection established': function(err) {
+      if (err) {
+        if(err.errno == 111) throw new Error("You need to have a memcache server running on localhost:11211 for these tests to run");
+        throw err;
+      }
+    }  
   }
-
-  exports['startup test'] = function(){
-    assert.ok(false, "Unexpected error during connection: "+util.inspect(e));
-  }
-});
-mc.connect();
-
-
-mc.addHandler(function() {
-
+})
+.addBatch({
   // test nonexistent key is null
-  exports['test null value'] = function(beforeExit) {
-    var n = 0;
-    mc.get('no such key', function(err, r) {
-      assert.equal(null, r);
-      n++;
-    });
-    
-    beforeExit(function() {
-      assert.equal(1, n);
-    });
-  };
-  
-  // test set, get and expires
+  'get with a bogus value': {
+    topic: function() {
+      mc.get('no such key', this.callback);
+    }
+    ,'returns null': function(err, ret) {
+      if(err) throw err;
+      assert.equal(ret, null);
+    }
+  }
+  ,'set a test key': {
+    topic: function() {
+      mc.set('set1', 'asdf1', this.callback);
+    }
+    ,'returns STORED': function (err, ret) {
+      if(err) throw err;
+      assert.equal(ret, 'STORED');
+    }
+    ,'and fetch it back': {
+      topic: function() {
+        mc.get('set1', this.callback);
+      }
+      ,'returns the value that was set': function (err, ret) {
+        if(err) throw err;
+        assert.equal(ret.toString('utf8'), 'asdf1');
+      }
+    }
+  }
+})
+.export(module);
+
+/*  // test set, get and expires
   exports['test set, get, and expires'] = function(beforeExit) {
     var n = 0;
     // set key
@@ -238,6 +255,8 @@ mc.addHandler(function() {
   };
 
 });
+
+*/
 
 function num_keys(a){
   var i=0;
