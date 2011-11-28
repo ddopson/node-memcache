@@ -1,5 +1,5 @@
 var sys      = require('sys');
-var memcache = require('./lib/memcache');
+var Memcache = require('./lib/memcache');
 
 function microtime(get_as_float) {  
     var now = new Date().getTime() / 1000;  
@@ -62,7 +62,7 @@ var decr = function() {
 	});
 };
 
-mcClient = new memcache.Client();
+mcClient = new Memcache();
 mcClient.connect();
 mcClient.addHandler(onConnect);
 

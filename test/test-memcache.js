@@ -3,12 +3,12 @@ tests for expresso
 */
 
 var sys = require('sys'),
-    memcache = require('memcache'),
+    Memcache = require('memcache'),
     assert = require('assert'),
 	port = 11211;
 var host = 'localhost';
 
-mc = new memcache.Client(port, host);
+mc = new Memcache(port, host);
 mc.on('error', function(e){
 
 	if (e.errno == 111){
