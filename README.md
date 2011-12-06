@@ -22,7 +22,7 @@ Usage
 
 Create a Client object to start working.
 Host and port can be passed to the constructor or set afterwards.
-They have sensible defaults.
+They have sensible defaults. 
 
 	var Memcache = require('memcache');
 
@@ -47,6 +47,9 @@ The Client object emits 4 important events - connect, close, timeout and error.
 	mc.on('error', function(e){
 		// there was an error - exception is 1st argument
 	});
+	
+	// connect to the memcache server after subscribing to some or all of these events
+	client.connect()
 
 After connecting, you can start to make requests.
 
